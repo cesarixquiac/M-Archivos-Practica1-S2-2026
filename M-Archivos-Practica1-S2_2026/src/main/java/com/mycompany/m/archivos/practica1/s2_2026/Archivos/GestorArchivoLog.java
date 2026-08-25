@@ -244,6 +244,56 @@ public class GestorArchivoLog {
         return entry;
     }
 
+    /**
+     * Exporta logs a CSV (usado desde reportes).
+     */
+    public void exportarLogsCSV(List<LogEntry> logs, String rutaArchivo) throws IOException {
+        try (java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(rutaArchivo))) {
+            bw.write("Timestamp,Modulo,Operacion,Entidad,ID_Entidad,Detalles,Usuario");
+            bw.newLine();
+            for (LogEntry l : logs) {
+                bw.write(String.join(",",
+                    escapeCsv(l.timestamp),
+                    escapeCsv(l.modulo),
+                    escapeCsv(l.operacion),
+                    escapeCsv(l.entidad),
+                    escapeCsv(l.idEntidad),
+                    escapeCsv(l.detalles),
+                    escapeCsv(l.usuario)
+                ));
+                bw.newLine();
+            }
+        }
+    }
+
+    /**
+     * Exporta logs a texto plano tabular.
+     */
+    public void exportarTextoPlano(String titulo, List<String[]> filas, String[] cabeceras, String rutaArchivo) throws IOException {
+        try (java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(rutaArchivo))) {
+            bw.write("=== " + titulo + " ===");
+            bw.newLine();
+            bw.newLine();
+            bw.write(String.join(" | ", cabeceras));
+            bw.newLine();
+            bw.write(String.join("-+-", java.util.Collections.nCopies(cabeceras.length, "---")));
+            bw.newLine();
+            for (String[] fila : filas) {
+                bw.write(String.join(" | ", fila));
+                bw.newLine();
+            }
+        }
+    }
+
+    private String escapeCsv(String valor) {
+        if (valor == null) return "";
+        String v = valor.replace("\"", "\"\"");
+        if (v.contains(",") || v.contains("\"") || v.contains("\n")) {
+            v = "\"" + v + "\"";
+        }
+        return v;
+    }
+
     public void cerrar() throws IOException {
         if (archivo != null) {
             archivo.close();
