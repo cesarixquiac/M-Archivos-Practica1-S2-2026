@@ -55,56 +55,69 @@ public class DialogoLogs extends JDialog {
     }
 
     private void inicializarComponentes() {
-        // ===== PANEL SUPERIOR: FILTROS =====
-        JPanel pnlFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        pnlFiltros.setBorder(BorderFactory.createTitledBorder("Filtros de Auditoría"));
+       // ===== PANEL SUPERIOR: FILTROS =====
+    // Creamos un panel principal con 2 filas y 1 columna
+    JPanel pnlFiltrosPrincipal = new JPanel(new java.awt.GridLayout(2, 1));
+    pnlFiltrosPrincipal.setBorder(BorderFactory.createTitledBorder("Filtros de Auditoría"));
 
-        pnlFiltros.add(new JLabel("Módulo:"));
-        cmbModulo = new JComboBox<>();
-        cmbModulo.setPreferredSize(new java.awt.Dimension(120, 25));
-        pnlFiltros.add(cmbModulo);
+    // --- Fila 1 ---
+    JPanel fila1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    
+    fila1.add(new JLabel("Módulo:"));
+    cmbModulo = new JComboBox<>();
+    cmbModulo.setPreferredSize(new java.awt.Dimension(120, 25));
+    fila1.add(cmbModulo);
 
-        pnlFiltros.add(new JLabel("Operación:"));
-        cmbOperacion = new JComboBox<>();
-        cmbOperacion.setPreferredSize(new java.awt.Dimension(120, 25));
-        pnlFiltros.add(cmbOperacion);
+    fila1.add(new JLabel("Operación:"));
+    cmbOperacion = new JComboBox<>();
+    cmbOperacion.setPreferredSize(new java.awt.Dimension(120, 25));
+    fila1.add(cmbOperacion);
 
-        pnlFiltros.add(new JLabel("Entidad:"));
-        cmbEntidad = new JComboBox<>();
-        cmbEntidad.setPreferredSize(new java.awt.Dimension(100, 25));
-        pnlFiltros.add(cmbEntidad);
+    fila1.add(new JLabel("Entidad:"));
+    cmbEntidad = new JComboBox<>();
+    cmbEntidad.setPreferredSize(new java.awt.Dimension(100, 25));
+    fila1.add(cmbEntidad);
 
-        pnlFiltros.add(new JLabel("ID Entidad:"));
-        txtIdEntidad = new JTextField(15);
-        pnlFiltros.add(txtIdEntidad);
+    fila1.add(new JLabel("ID Entidad:"));
+    txtIdEntidad = new JTextField(15);
+    fila1.add(txtIdEntidad);
 
-        pnlFiltros.add(new JLabel("Usuario:"));
-        txtUsuario = new JTextField(12);
-        pnlFiltros.add(txtUsuario);
+    // --- Fila 2 ---
+    JPanel fila2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    
+    fila2.add(new JLabel("Usuario:"));
+    txtUsuario = new JTextField(12);
+    fila2.add(txtUsuario);
 
-        pnlFiltros.add(new JLabel("Desde:"));
-        txtFechaDesde = new JTextField(10);
-        txtFechaDesde.setToolTipText("DD/MM/YYYY");
-        pnlFiltros.add(txtFechaDesde);
+    fila2.add(new JLabel("Desde:"));
+    txtFechaDesde = new JTextField(10);
+    txtFechaDesde.setToolTipText("DD/MM/YYYY");
+    fila2.add(txtFechaDesde);
 
-        pnlFiltros.add(new JLabel("Hasta:"));
-        txtFechaHasta = new JTextField(10);
-        txtFechaHasta.setToolTipText("DD/MM/YYYY");
-        pnlFiltros.add(txtFechaHasta);
+    fila2.add(new JLabel("Hasta:"));
+    txtFechaHasta = new JTextField(10);
+    txtFechaHasta.setToolTipText("DD/MM/YYYY");
+    fila2.add(txtFechaHasta);
+    
+    JButton btnFiltrar = new JButton("Filtrar");
+    btnFiltrar.addActionListener(e -> cargarLogs());
+    fila2.add(btnFiltrar);
 
-        JButton btnFiltrar = new JButton("Filtrar");
-        btnFiltrar.addActionListener(e -> cargarLogs());
-        pnlFiltros.add(btnFiltrar);
+    JButton btnLimpiar = new JButton("Limpiar");
+    btnLimpiar.addActionListener(e -> limpiarFiltros());
+    fila2.add(btnLimpiar);
 
-        JButton btnLimpiar = new JButton("Limpiar");
-        btnLimpiar.addActionListener(e -> limpiarFiltros());
-        pnlFiltros.add(btnLimpiar);
+    
+    pnlFiltrosPrincipal.add(fila1);
+    pnlFiltrosPrincipal.add(fila2);
 
-        add(pnlFiltros, BorderLayout.NORTH);
+  
+    add(pnlFiltrosPrincipal, BorderLayout.NORTH);
 
         // ===== PANEL CENTRAL: TABLA =====
         String[] columnas = {"Timestamp", "Módulo", "Operación", "Entidad", "ID Entidad", "Detalles", "Usuario"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
+            
             @Override public boolean isCellEditable(int row, int col) { return false; }
         };
         tabla = new JTable(modeloTabla);
